@@ -48,4 +48,4 @@ class RabbitMq():
                                     routing_key=self.server.routingKey,
                                     body=payload)
 
-        print("Sending Frame")
+        # print("Sending Frame")

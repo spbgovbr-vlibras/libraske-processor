@@ -6,6 +6,7 @@ import numpy as np
 import json
 import base64
 
+
 class HolisticCallback():
 
     @staticmethod
@@ -13,11 +14,11 @@ class HolisticCallback():
 
         message = json.loads(body)
 
-        video_id = message.video_id
-        frame_id = message.frame_id
-        video_path = message.video_path
+        video_id = message["video_id"]
+        frame_id = message["frame_id"]
+        frame_link = message["frame_link"]
 
-        with open(video_path, "rb") as f:
+        with open(frame_link, "rb") as f:
             im_b64 = base64.b64encode(f.read())
 
         im64_bytes = base64.b64decode(im_b64)
@@ -47,5 +48,5 @@ class HolisticCallback():
 
                 cv2.imwrite('output/image' + file_id +
                             '.png', annotated_image)
-                            
+
         return results, video_id, frame_id
