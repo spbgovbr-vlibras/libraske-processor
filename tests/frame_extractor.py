@@ -25,7 +25,7 @@ def getFrame(sec, frame_id, video_id, vidcap, server):
 
     if hasFrames:
 
-        out_frame_path = f'images_in/{str(frame_id)}.jpg'
+        out_frame_path = f'input_frames/{video_id}_frame_{str(frame_id)}.jpg'
         cv2.imwrite(out_frame_path, image)
 
         with open(out_frame_path, "rb") as f:
@@ -36,7 +36,7 @@ def getFrame(sec, frame_id, video_id, vidcap, server):
 
             json_payload = {
                 "video_id": video_id,
-                "frame_id": frame_id,
+                "frame_id": str(frame_id),
                 "frame_link": out_frame_path
             }
             message = json.dumps(json_payload)

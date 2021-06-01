@@ -25,7 +25,6 @@ class HolisticCallback():
 
         # im_arr = np.frombuffer(im64_bytes, dtype=np.uint8)
         # img = cv2.imdecode(im_arr, flags=cv2.COLOR_BGR2RGB)
-        file_id = str(uuid4())[:5]
         mp_drawing = mp.solutions.drawing_utils
         mp_holistic = mp.solutions.holistic
 
@@ -33,7 +32,7 @@ class HolisticCallback():
 
             image = cv2.imread(frame_link)
 
-            results = holistic.process(image)
+            results = holistic.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
             if results.pose_landmarks:
                 # print(
                 #     f'Nose coordinates: ('
@@ -48,7 +47,7 @@ class HolisticCallback():
                 mp_drawing.draw_landmarks(
                     annotated_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS)
 
-                cv2.imwrite('output/image' + file_id +
-                            '.png', annotated_image)
+                cv2.imwrite(
+                    f'processed_frames/{video_id}_frame_{frame_id}.png', annotated_image)
 
         return results, video_id, frame_id

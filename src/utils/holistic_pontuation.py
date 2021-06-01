@@ -11,7 +11,7 @@ class GetScore():
 
     def get_score(self, results, video_id, frameID):
 
-        with open(f'output/{video_id}.txt') as json_file:
+        with open(f'references_data/{video_id}.txt') as json_file:
             reference = json.load(json_file)
 
         body_scheme = SchemeEvaluation().evaluation_scheme
@@ -22,6 +22,7 @@ class GetScore():
         sum_pose_miss = 0
         sum_left_hand_miss = 0
         sum_right_hand_miss = 0
+        # frameID = str(frameID)
 
         for key, values in body_scheme.items():
 
