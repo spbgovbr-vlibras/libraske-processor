@@ -1,75 +1,83 @@
 
 import pika
-import os
-import sys
 import json
 import cv2
-import base64
-import numpy as np
 import fire
 import re
-import ast
+from tqdm import trange
 
 
-def imageSender(out_frame_path, server, im64_bytes):
+class Extract_Frame:
 
-    with RabbitMq(server) as rabbitmq:
-        rabbitmq.publish(payload=im64_bytes)
+    def __init__(self):
+        self.resize_width = 854
+        self.resize_height = 480
+        self.server = RabbitmqConfigure(queue='Mediapipe',
+                                        host='localhost',
+                                        routingKey='Mediapipe',
+                                        exchange='')
 
+    def imageSender(self, message):
 
-def getFrame(sec, frame_id, video_id, vidcap, server):
+        with RabbitMq(self.server) as rabbitmq:
+            rabbitmq.publish(payload=message)
 
-    vidcap.set(cv2.CAP_PROP_POS_MSEC, sec*1000)
-    hasFrames, image = vidcap.read()
-    out_frame_path = ''
+    def reduce_image(self, image):
 
-    if hasFrames:
+        dim = (self.resize_width, self.resize_height)
+        resized = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+        return resized
+
+    def getFrame(self, sec, frame_id, video_id, vidcap, reduce_size):
 
         out_frame_path = f'input_frames/{video_id}_frame_{str(frame_id)}.jpg'
-        cv2.imwrite(out_frame_path, image)
+        vidcap.set(cv2.CAP_PROP_POS_MSEC, sec*1000)
+        hasFrames, image = vidcap.read()
 
-        with open(out_frame_path, "rb") as f:
-            im_b64 = base64.b64encode(f.read())
+        if hasFrames:
 
-        im64_bytes = base64.b64decode(im_b64)
-        if out_frame_path:
+            file_image = image if not reduce_size else self.reduce_image(image)
 
-            json_payload = {
-                "video_id": video_id,
-                "frame_id": str(frame_id),
-                "frame_link": out_frame_path
-            }
-            message = json.dumps(json_payload)
-            imageSender(out_frame_path, server, message)
+            cv2.imwrite(out_frame_path, cv2.cvtColor(
+                file_image, cv2.COLOR_BGR2GRAY))
 
-    return hasFrames, out_frame_path
+            if out_frame_path:
 
+                json_payload = {
+                    "video_id": video_id,
+                    "frame_id": str(frame_id),
+                    "frame_link": out_frame_path
+                }
+                message = json.dumps(json_payload)
+                self.imageSender(message)
 
-def frame_extractor(video_path):
+        return hasFrames
 
-    server = RabbitmqConfigure(queue='Mediapipe',
-                               host='localhost',
-                               routingKey='Mediapipe',
-                               exchange='')
+    def frame_extractor(self, video_path, reduce_size=False):
 
-    files_list = []
-    video_id = re.search(r'[^/]+(?=\.)', video_path).group(0)
-    vidcap = cv2.VideoCapture(video_path)
-    sec = 0
-    frameRate = 0.5
-    frame_id = 1
-    success, out_frame_path = getFrame(sec, frame_id, video_id, vidcap, server)
+        print(f'IMAGE REDUCE={reduce_size}')
 
-    while success:
-        frame_id = frame_id + 1
-        sec = sec + frameRate
-        sec = round(sec, 2)
-        success, out_frame_path = getFrame(
-            sec, frame_id, video_id, vidcap, server)
-        if out_frame_path:
-            files_list.append(out_frame_path)
+        video_id = re.search(r'[^/]+(?=\.)', video_path).group(0)
+        vidcap = cv2.VideoCapture(video_path)
+        sec = 0
+        frameRate = 0.5
+        frame_id = 0
+        success = self.getFrame(
+            sec, frame_id, video_id, vidcap, reduce_size)
 
-    return files_list
+        frames_number = round((int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT)) /
+                               vidcap.get(cv2.CAP_PROP_FPS))/0.5)
+
+        progress_bar = trange(frames_number, colour='#8B71F6',
+                              desc='Sending Frames 🖼️:')
+
+        while success:
+            progress_bar.update(1)
+            frame_id = frame_id + 1
+            sec = sec + frameRate
+            sec = round(sec, 2)
+            success = self.getFrame(
+                sec, frame_id, video_id, vidcap, reduce_size)
 
 
 class MetaClass(type):
@@ -111,11 +119,9 @@ class RabbitMq():
         self._channel.queue_declare(queue=self.server.queue)
 
     def __enter__(self):
-        # print("__enter__")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # print("__exit__")
         self._connection.close()
 
     def publish(self, payload={}):
@@ -127,8 +133,6 @@ class RabbitMq():
         self._channel.basic_publish(exchange=self.server.exchange,
                                     routing_key=self.server.routingKey,
                                     body=payload)
-
-        print("Sending Frame")
 
 
 class Image(object):
@@ -147,6 +151,5 @@ class Image(object):
 
 if __name__ == "__main__":
 
-    # video_path = 'video/OFTAMOLOGISTA.mp4'
-
-    fire.Fire(frame_extractor)
+    frame_extractor = Extract_Frame()
+    fire.Fire(frame_extractor.frame_extractor)
