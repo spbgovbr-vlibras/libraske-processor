@@ -76,7 +76,9 @@ class GetScore():
         total_average_miss = (average_pose_miss*pose_weight + average_left_hand_miss *
                               hand_weight + average_right_hand_miss*hand_weight)/(pose_weight + hand_weight*2)
 
-        print("Total average miss:", "{:.2f}".format(
-            total_average_miss*100), "%")
+        print("Total average likeness:", "{:.2f}".format(
+            (1-total_average_miss)*100), "%")
+
+        print(f'Raw score: {1-total_average_miss}')
 
         return "{:.2f}".format(total_average_miss*100)
