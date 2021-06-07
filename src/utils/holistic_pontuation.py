@@ -81,4 +81,4 @@ class GetScore():
 
         print(f'Raw score: {1-total_average_miss}')
 
-        return "{:.2f}".format(total_average_miss*100)
+        return {1-total_average_miss}
