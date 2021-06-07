@@ -61,7 +61,7 @@ class Extract_Frame:
         vidcap = cv2.VideoCapture(video_path)
         sec = 0
         frameRate = 0.5
-        frame_id = 0
+        frame_id = 1
         success = self.getFrame(
             sec, frame_id, video_id, vidcap, reduce_size)
 
