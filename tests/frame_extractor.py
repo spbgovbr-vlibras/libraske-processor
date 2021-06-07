@@ -37,9 +37,9 @@ class Extract_Frame:
         if hasFrames:
 
             file_image = image if not reduce_size else self.reduce_image(image)
+            file_image = image if not reduce_size else cv2.cvtColor(file_image, cv2.COLOR_BGR2GRAY)
 
-            cv2.imwrite(out_frame_path, cv2.cvtColor(
-                file_image, cv2.COLOR_BGR2GRAY))
+            cv2.imwrite(out_frame_path, file_image)
 
             if out_frame_path:
 
