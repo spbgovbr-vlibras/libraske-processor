@@ -12,9 +12,9 @@ class Extract_Frame:
     def __init__(self):
         self.resize_width = 854
         self.resize_height = 480
-        self.server = RabbitmqConfigure(queue='Mediapipe',
+        self.server = RabbitmqConfigure(queue='frame_sender',
                                         host='localhost',
-                                        routingKey='Mediapipe',
+                                        routingKey='frame_sender',
                                         exchange='')
 
     def imageSender(self, message):

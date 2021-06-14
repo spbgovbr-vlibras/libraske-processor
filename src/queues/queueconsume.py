@@ -16,13 +16,12 @@ class MetaClass(type):
 
 class RabbitMqServerConfigure(metaclass=MetaClass):
 
-    def __init__(self, host='localhost', queue='hello'):
+    def __init__(self, host='localhost', queue='hello', persistent=True):
         """ Server initialization   """
 
         self.host = host
         self.queue = queue
-
-
+        self.persistent = persistent
 class RabbitmqServer():
 
     def __init__(self, server):
@@ -33,7 +32,7 @@ class RabbitmqServer():
         self._connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.server.host))
         self._channel = self._connection.channel()
-        self._tem = self._channel.queue_declare(queue=self.server.queue)
+        self._tem = self._channel.queue_declare(queue=self.server.queue, arguments={"persistent":True}, durable=True)
         print("Server started waiting for Messages!🚀")
 
     def startserver(self, queue, callback):

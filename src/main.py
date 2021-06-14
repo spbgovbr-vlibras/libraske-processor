@@ -2,19 +2,20 @@ from queues import queueconsume
 from queues import queuepublisher
 from utils import holistic_callback
 from utils import holistic_pontuation
+import json
 
 
 class Worker:
 
     def __init__(self):
 
-        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue='Mediapipe_out',
+        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue='frame_receiver',
                                                                      host='localhost',
-                                                                     routingKey='Mediapipe_out',
+                                                                     routingKey='frame_receiver',
                                                                      exchange='')
 
         self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(host='localhost',
-                                                                        queue='Mediapipe')
+                                                                        queue='sender', persistent=True)
 
         self.__consumer = queueconsume.RabbitmqServer(self.__consumerconfigure)
 
@@ -28,12 +29,21 @@ class Worker:
 
     def __callback(self, _ch, _method, _properties, body):
 
-        results, video_id, frame_id = self.__holistic_process(body)
+        results, video_id, frame_id, session_id = self.__holistic_process(body)
 
-        msg = self.__score_eval.get_score(
+        score = self.__score_eval.get_score(
             results, video_id, frame_id)
 
-        self.__publisher_message(msg)
+        msg = {
+            "idSession": session_id,
+            "score":score
+        }
+
+        print(msg)
+
+        payload = json.dumps(msg)
+
+        self.__publisher_message(payload)
 
     def start(self, queue):
 
@@ -43,4 +53,4 @@ class Worker:
 if __name__ == "__main__":
 
     worker = Worker()
-    worker.start("Mediapipe")
+    worker.start("frame_sender")
