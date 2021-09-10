@@ -16,10 +16,11 @@ class MetaClass(type):
 
 class RabbitmqConfigure(metaclass=MetaClass):
 
-    def __init__(self, queue='hello', host='localhost', routingKey='hello', exchange=''):
+    def __init__(self, queue='hello', host='localhost', port="5672", routingKey='hello', exchange=''):
 
         self.queue = queue
         self.host = host
+        self.port = po
         self.routingKey = routingKey
         self.exchange = exchange
 

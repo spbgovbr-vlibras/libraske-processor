@@ -1,0 +1,4 @@
+pika
+numpy
+mediapipe
+opencv-python

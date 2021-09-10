@@ -16,12 +16,14 @@ class MetaClass(type):
 
 class RabbitMqServerConfigure(metaclass=MetaClass):
 
-    def __init__(self, host='localhost', queue='hello', persistent=True):
+    def __init__(self, host='localhost', port="5672", queue='hello', persistent=True):
         """ Server initialization   """
 
         self.host = host
+        self.port = port
         self.queue = queue
         self.persistent = persistent
+
 class RabbitmqServer():
 
     def __init__(self, server):

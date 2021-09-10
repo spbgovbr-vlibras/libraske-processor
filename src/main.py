@@ -2,6 +2,7 @@ from queues import queueconsume
 from queues import queuepublisher
 from utils import holistic_callback
 from utils import holistic_pontuation
+from utils import configreader
 import json
 
 
@@ -9,13 +10,22 @@ class Worker:
 
     def __init__(self):
 
-        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue='frame_receiver',
-                                                                     host='localhost',
-                                                                     routingKey='frame_receiver',
+
+        self._rabbitcfg = configreader.load_configs("RabbitMQ")
+        self.workercfg = configreader.load_configs("Worker")
+
+
+        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue=self.workercfg.get("ReceiveQueue", "frame_receiver"),
+                                                                     host=self._rabbitcfg.get("Host", "localhost"),
+                                                                     port=self._rabbitcfg.get("Port", "5672"),
+                                                                     routingKey=self.workercfg.get("ReceiveQueue", "frame_receiver"),
                                                                      exchange='')
 
-        self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(host='localhost',
-                                                                        queue='sender', persistent=True)
+        self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(queue=self.workercfg.get("ReceiveQueue", "frame_receiver"),
+                                                                        host=self._rabbitcfg.get("Host", "localhost"),
+                                                                        port=self._rabbitcfg.get("Port", "5672"),
+                                                                        persistent=True
+                                                                        )
 
         self.__consumer = queueconsume.RabbitmqServer(self.__consumerconfigure)
 
@@ -39,7 +49,7 @@ class Worker:
             "score":score
         }
 
-        print(msg)
+        # print(msg)
 
         payload = json.dumps(msg)
 
@@ -52,5 +62,7 @@ class Worker:
 
 if __name__ == "__main__":
 
+    workercfg = configreader.load_configs("Worker")
+    
     worker = Worker()
-    worker.start("frame_sender")
+    worker.start(workercfg.get("ReceiveQueue"))
