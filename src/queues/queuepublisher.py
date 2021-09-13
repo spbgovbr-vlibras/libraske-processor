@@ -20,7 +20,7 @@ class RabbitmqConfigure(metaclass=MetaClass):
 
         self.queue = queue
         self.host = host
-        self.port = po
+        self.port = port
         self.routingKey = routingKey
         self.exchange = exchange
 
