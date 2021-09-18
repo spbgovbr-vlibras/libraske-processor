@@ -14,16 +14,27 @@ class Worker:
         self._rabbitcfg = configreader.load_configs("RabbitMQ")
         self.workercfg = configreader.load_configs("Worker")
 
+        queueConf = self.workercfg.get("ReceiveQueue", "frame_receiver")
+        hostConf = self._rabbitcfg.get("Host", "localhost")
+        portConf = self._rabbitcfg.get("Port", "5672")
+        userConf = self._rabbitcfg.get("Username", "Guest")
+        pwdConf = self._rabbitcfg.get("Password", "Guest")
+        print ("Queue, Host, Port, User, PWD = " + queueConf + " " + hostConf+ " " + portConf+ " " + userConf+ " " + pwdConf)
 
-        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue=self.workercfg.get("ReceiveQueue", "frame_receiver"),
-                                                                     host=self._rabbitcfg.get("Host", "localhost"),
-                                                                     port=self._rabbitcfg.get("Port", "5672"),
-                                                                     routingKey=self.workercfg.get("ReceiveQueue", "frame_receiver"),
+
+        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue=queueConf,
+                                                                     host=hostConf,
+                                                                     port=portConf,
+                                                                     user=userConf,
+                                                                     password=pwdConf,
+                                                                     routingKey=queueConf,
                                                                      exchange='')
 
-        self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(queue=self.workercfg.get("ReceiveQueue", "frame_receiver"),
-                                                                        host=self._rabbitcfg.get("Host", "localhost"),
-                                                                        port=self._rabbitcfg.get("Port", "5672"),
+        self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(queue=queueConf,
+                                                                        host=hostConf,
+                                                                        port=portConf,
+                                                                        user=userConf,
+                                                                        password=pwdConf,
                                                                         persistent=True
                                                                         )
 

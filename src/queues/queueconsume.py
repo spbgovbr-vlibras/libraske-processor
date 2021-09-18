@@ -16,12 +16,14 @@ class MetaClass(type):
 
 class RabbitMqServerConfigure(metaclass=MetaClass):
 
-    def __init__(self, host='localhost', port="5672", queue='hello', persistent=True):
+    def __init__(self, host='localhost', port="5672", user="Guest" , password="Guest", queue='hello', persistent=True):
         """ Server initialization   """
 
         self.host = host
         self.port = port
         self.queue = queue
+        self.user = user
+        self.password = password
         self.persistent = persistent
 
 class RabbitmqServer():
@@ -31,10 +33,12 @@ class RabbitmqServer():
         :param server: Object of class RabbitMqServerConfigure
         """
         self.server = server
-        self._connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=self.server.host))
+        cred = pika.PlainCredentials(self.server.user, self.server.password)
+        self._parameters = pika.ConnectionParameters(host=self.server.host, port=self.server.port, credentials=cred)
+        self._connection = pika.BlockingConnection(self._parameters)
         self._channel = self._connection.channel()
-        self._tem = self._channel.queue_declare(queue=self.server.queue, arguments={"persistent":True}, durable=True)
+#        self._tem = self._channel.queue_declare(queue=self.server.queue, arguments={"persistent":True}, durable=True)
+        self._tem = self._channel.queue_declare(queue=self.server.queue, arguments={"persistent":True}, durable=False)
         print("Server started waiting for Messages!🚀")
 
     def startserver(self, queue, callback):
