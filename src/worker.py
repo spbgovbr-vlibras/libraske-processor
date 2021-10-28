@@ -14,7 +14,7 @@ class Worker:
         self._rabbitcfg = configreader.load_configs("RabbitMQ")
         self.workercfg = configreader.load_configs("Worker")
 
-        queueConf = self.workercfg.get("ReceiveQueue", "frame_receiver")
+        queueConf = self.workercfg.get("SenderQueue", "frame_sender")
         hostConf = self._rabbitcfg.get("Host", "localhost")
         portConf = self._rabbitcfg.get("Port", "5672")
         userConf = self._rabbitcfg.get("Username", "Guest")
@@ -22,12 +22,12 @@ class Worker:
         print ("Queue, Host, Port, User, PWD = " + queueConf + " " + hostConf+ " " + portConf+ " " + userConf+ " " + pwdConf)
 
 
-        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue=queueConf,
+        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue="frame_receiver",
                                                                      host=hostConf,
                                                                      port=portConf,
                                                                      user=userConf,
                                                                      password=pwdConf,
-                                                                     routingKey=queueConf,
+                                                                     routingKey="frame_receiver",
                                                                      exchange='')
 
         self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(queue=queueConf,
@@ -50,21 +50,27 @@ class Worker:
 
     def __callback(self, _ch, _method, _properties, body):
 
-        results, video_id, frame_id, session_id = self.__holistic_process(body)
+        message = json.loads(body)
 
-        score = self.__score_eval.get_score(
-            results, video_id, frame_id)
+        if(len(message)>2):
 
-        msg = {
-            "idSession": session_id,
-            "score":score
-        }
+            results, video_id, frame_id, session_id = self.__holistic_process(body)
 
-        # print(msg)
+            print(f"vide-id: {video_id}")
 
-        payload = json.dumps(msg)
+            score = self.__score_eval.get_score(
+                results, video_id, frame_id)
 
-        self.__publisher_message(payload)
+            msg = {
+                "idSession": session_id,
+                "score": score
+            }
+
+            # print(msg)
+
+            payload = json.dumps(msg)
+
+            self.__publisher_message(payload)
 
     def start(self, queue):
 

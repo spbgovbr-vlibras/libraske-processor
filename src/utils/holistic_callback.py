@@ -14,8 +14,10 @@ class HolisticCallback():
 
         message = json.loads(body)
 
+        # print(message)
+
         session_id = message["idSession"]
-        video_id = "01"
+        video_id =  message["videoId"]
         frame_id = message["idFrame"]
         frame_Image = message["frameImage"]
 
@@ -31,15 +33,17 @@ class HolisticCallback():
 
         with mp_holistic.Holistic(static_image_mode=True) as holistic:
 
+            print("entreeeeei")
+
             # image = cv2.imread(image)
 
             results = holistic.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             if results.pose_landmarks:
-                # print(
-                #     f'Nose coordinates: ('
-                #     f'{results.pose_landmarks.landmark}, '
-                #     f'{results.pose_landmarks.landmark})'
-                # )
+                print(
+                    f'Nose coordinates: ('
+                    f'{results.pose_landmarks.landmark}, '
+                    f'{results.pose_landmarks.landmark})'
+                )
                 annotated_image = img.copy()
                 mp_drawing.draw_landmarks(
                     annotated_image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
