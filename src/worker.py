@@ -14,7 +14,7 @@ class Worker:
         self._rabbitcfg = configreader.load_configs("RabbitMQ")
         self.workercfg = configreader.load_configs("Worker")
 
-        queueConf = self.workercfg.get("SenderQueue", "frame_sender")
+        queueConf = self.workercfg.get("ReceiveQueue", "frame_receiver")
         hostConf = self._rabbitcfg.get("Host", "localhost")
         portConf = self._rabbitcfg.get("Port", "5672")
         userConf = self._rabbitcfg.get("Username", "Guest")
@@ -61,12 +61,12 @@ class Worker:
             score = self.__score_eval.get_score(
                 results, video_id, frame_id)
 
-            msg = {
-                "idSession": session_id,
-                "score": score
-            }
+            final_score = (int(score.split(".")[1][0:2]) + 50*2)//3
 
-            # print(msg)
+            msg = {
+                "idGameSession": session_id,
+                "pontuation": final_score
+            }
 
             payload = json.dumps(msg)
 

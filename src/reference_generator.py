@@ -54,7 +54,7 @@ def reference_generator(video_path):
 
     vidcap = cv2.VideoCapture(video_path)
     sec = 0
-    frameRate = 0.5
+    frameRate = 3
     count = 1
     video_id = re.search(r'[^/]+(?=\.)', video_path).group(0)
     success = getFrame(sec, count, vidcap, video_id)

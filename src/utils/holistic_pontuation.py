@@ -81,4 +81,4 @@ class GetScore():
 
         print(f'Raw score: {1-total_average_miss}')
 
-        return str({1-total_average_miss})
+        return str(1-total_average_miss)

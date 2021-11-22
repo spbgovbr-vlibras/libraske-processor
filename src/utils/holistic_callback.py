@@ -39,11 +39,11 @@ class HolisticCallback():
 
             results = holistic.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             if results.pose_landmarks:
-                print(
-                    f'Nose coordinates: ('
-                    f'{results.pose_landmarks.landmark}, '
-                    f'{results.pose_landmarks.landmark})'
-                )
+                # print(
+                #     f'Nose coordinates: ('
+                #     f'{results.pose_landmarks.landmark}, '
+                #     f'{results.pose_landmarks.landmark})'
+                # )
                 annotated_image = img.copy()
                 mp_drawing.draw_landmarks(
                     annotated_image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
