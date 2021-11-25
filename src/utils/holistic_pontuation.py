@@ -23,9 +23,9 @@ class GetScore():
         sum_left_hand_miss = 0
         sum_right_hand_miss = 0
         # frameID = str(frameID)
-
+        
         for key, values in body_scheme.items():
-
+            
             if 'POSE' == key:
 
                 for value in values:
@@ -39,7 +39,7 @@ class GetScore():
                     except:
                         sum_pose_miss += 1
 
-                average_pose_miss = sum_pose_miss/len(values)
+                average_pose_miss = sum_pose_miss/len(values) if sum_pose_miss < len(values) else 0
 
             if 'LEFT_HAND' == key:
 
@@ -55,7 +55,7 @@ class GetScore():
                     except:
                         sum_left_hand_miss += 1
 
-                average_left_hand_miss = sum_left_hand_miss/len(values)
+                average_left_hand_miss = sum_left_hand_miss/len(values) if sum_left_hand_miss < len(values) else 0
 
             if 'RIGHT_HAND' == key:
 
@@ -71,7 +71,9 @@ class GetScore():
                     except:
                         sum_right_hand_miss += 1
 
-                average_right_hand_miss = sum_right_hand_miss/len(values)
+                average_right_hand_miss = sum_right_hand_miss/len(values) if sum_right_hand_miss < len(values) else 0
+                
+        
 
         total_average_miss = (average_pose_miss*pose_weight + average_left_hand_miss *
                               hand_weight + average_right_hand_miss*hand_weight)/(pose_weight + hand_weight*2)
