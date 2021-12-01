@@ -73,10 +73,10 @@ class GetScore():
 
                 average_right_hand_miss = sum_right_hand_miss/len(values) if sum_right_hand_miss < len(values) else 0
                 
-        
+        if average_left_hand_miss>0 or average_right_hand_miss>0 or average_pose_miss>0:
+            total_average_miss = (average_pose_miss*pose_weight + average_left_hand_miss *
+                                hand_weight + average_right_hand_miss*hand_weight)/(pose_weight + hand_weight*2)
 
-        total_average_miss = (average_pose_miss*pose_weight + average_left_hand_miss *
-                              hand_weight + average_right_hand_miss*hand_weight)/(pose_weight + hand_weight*2)
 
         print("Total average likeness:", "{:.2f}".format(
             (1-total_average_miss)*100), "%")
