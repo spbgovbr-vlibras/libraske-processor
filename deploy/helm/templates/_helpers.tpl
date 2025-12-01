@@ -10,14 +10,14 @@ Expand the name of the chart.
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "libraskeapi.name" -}}
+{{- define "libraskeprocessor.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Expand the name of the release chart.
 */}}
-{{- define "libraskeapi.release.name" -}}
+{{- define "libraskeprocessor.release.name" -}}
 {{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -25,23 +25,23 @@ Expand the name of the release chart.
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "libraskeapi.fullname" -}}
+{{- define "libraskeprocessor.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/* Create chart name and version as used by the chart label. */}}
-{{- define "libraskeapi.chartref" -}}
+{{- define "libraskeprocessor.chartref" -}}
 {{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
 {{- end }}
 
 {{/* Generate basic labels */}}
-{{- define "libraskeapi.labels" }}
+{{- define "libraskeprocessor.labels" }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: "{{ replace "+" "_" .Chart.Version }}"
 app.kubernetes.io/part-of: {{ template "vlibras.name" . }}
-chart: {{ template "libraskeapi.chartref" . }}
+chart: {{ template "libraskeprocessor.chartref" . }}
 release: {{ $.Release.Name | quote }}
 heritage: {{ $.Release.Service | quote }}
 {{- if .Values.commonLabels}}
@@ -54,7 +54,7 @@ heritage: {{ $.Release.Service | quote }}
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "libraskeapi-name.fullname" -}}
+{{- define "libraskeprocessor-name.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-libraskeapi" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-libraskeprocessor" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

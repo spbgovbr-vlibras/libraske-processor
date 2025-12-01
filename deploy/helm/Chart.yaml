@@ -1,5 +1,5 @@
 apiVersion: v2
-name: libraskeapi
+name: libraskeprocessor
 description: Módulo de Video do Vlibras.
 maintainers:
   - name: Ministério da Gestão e Inovação em Serviços Públicos

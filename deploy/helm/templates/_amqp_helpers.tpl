@@ -1,8 +1,8 @@
-{{- define "libraskeapiGetAmqpUsername" -}}
-{{- if and .Values.global .Values.global.amqp .Values.global.amqp.username (not .Values.externalServices.libraskeapi.amqp.username) }}
+{{- define "libraskeprocessorGetAmqpUsername" -}}
+{{- if and .Values.global .Values.global.amqp .Values.global.amqp.username (not .Values.externalServices.libraskeprocessor.amqp.username) }}
   {{- .Values.global.amqp.username -}}
-{{- else if .Values.externalServices.libraskeapi.amqp.username -}}
-  {{- .Values.externalServices.libraskeapi.amqp.username -}}
+{{- else if .Values.externalServices.libraskeprocessor.amqp.username -}}
+  {{- .Values.externalServices.libraskeprocessor.amqp.username -}}
 {{- else if .Values.rabbitmqha.rabbitmqUsername -}}
   {{- .Values.rabbitmqha.rabbitmqUsername -}}
 {{- else -}}
@@ -10,11 +10,11 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "libraskeapiGetAmqpPassword" -}}
-{{- if and .Values.global .Values.global.amqp .Values.global.amqp.password (not .Values.externalServices.libraskeapi.amqp.password) }}
+{{- define "libraskeprocessorGetAmqpPassword" -}}
+{{- if and .Values.global .Values.global.amqp .Values.global.amqp.password (not .Values.externalServices.libraskeprocessor.amqp.password) }}
   {{- .Values.global.amqp.password -}}
-{{- else if .Values.externalServices.libraskeapi.amqp.password -}}
-  {{- .Values.externalServices.libraskeapi.amqp.password -}}
+{{- else if .Values.externalServices.libraskeprocessor.amqp.password -}}
+  {{- .Values.externalServices.libraskeprocessor.amqp.password -}}
 {{- else if .Values.rabbitmqha.rabbitmqPassword -}}
   {{- .Values.rabbitmqha.rabbitmqPassword -}}
 {{- else -}}
@@ -22,11 +22,11 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "libraskeapiGetAmqpHost" -}}
-{{- if and .Values.global .Values.global.amqp .Values.global.amqp.host (not .Values.externalServices.libraskeapi.amqp.host) }}
+{{- define "libraskeprocessorGetAmqpHost" -}}
+{{- if and .Values.global .Values.global.amqp .Values.global.amqp.host (not .Values.externalServices.libraskeprocessor.amqp.host) }}
   {{- .Values.global.amqp.host -}}
-{{- else if .Values.externalServices.libraskeapi.amqp.host -}}
-  {{- .Values.externalServices.libraskeapi.amqp.host -}}
+{{- else if .Values.externalServices.libraskeprocessor.amqp.host -}}
+  {{- .Values.externalServices.libraskeprocessor.amqp.host -}}
 {{- else if .Values.amqp.host -}}
   {{- .Values.amqp.host -}}
 {{- else -}}
@@ -34,11 +34,11 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "libraskeapiGetAmqpPort" -}}
-{{- if and .Values.global .Values.global.amqp .Values.global.amqp.port (not .Values.externalServices.libraskeapi.amqp.port) }}
+{{- define "libraskeprocessorGetAmqpPort" -}}
+{{- if and .Values.global .Values.global.amqp .Values.global.amqp.port (not .Values.externalServices.libraskeprocessor.amqp.port) }}
   {{- .Values.global.amqp.port | toString -}}
-{{- else if .Values.externalServices.libraskeapi.amqp.port -}}
-  {{- .Values.externalServices.libraskeapi.amqp.port | toString -}}
+{{- else if .Values.externalServices.libraskeprocessor.amqp.port -}}
+  {{- .Values.externalServices.libraskeprocessor.amqp.port | toString -}}
 {{- else if .Values.amqp.port -}}
   {{- .Values.amqp.port | toString -}}
 {{- else -}}
@@ -49,12 +49,12 @@
 {{/*
 Define the name of the PostgreSQL secret to use.
 */}}
-{{- define "libraskeapiGetAmqpSecretName" -}}
-{{- if and .Values.global .Values.global.amqp .Values.global.amqp.existingSecrets (not .Values.externalServices.libraskeapi.amqp.existingSecrets) }}
+{{- define "libraskeprocessorGetAmqpSecretName" -}}
+{{- if and .Values.global .Values.global.amqp .Values.global.amqp.existingSecrets (not .Values.externalServices.libraskeprocessor.amqp.existingSecrets) }}
   {{- print .Values.global.amqp.existingSecrets }}
-{{- else if .Values.externalServices.libraskeapi.amqp.existingSecrets }}
-  {{- print .Values.externalServices.libraskeapi.amqp.existingSecrets }}
+{{- else if .Values.externalServices.libraskeprocessor.amqp.existingSecrets }}
+  {{- print .Values.externalServices.libraskeprocessor.amqp.existingSecrets }}
 {{- else }}
-  {{- print (include "libraskeapi.fullname" .) "-amqp-credentials" }}
+  {{- print (include "libraskeprocessor.fullname" .) "-amqp-credentials" }}
 {{- end }}
 {{- end }}

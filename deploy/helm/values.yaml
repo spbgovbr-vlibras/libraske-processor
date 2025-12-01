@@ -11,7 +11,7 @@ imagePullSecrets:
   - name: registrynuvem
 
 global:  
-  appName: libraskeapi
+  appName: libraskeprocessor
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
@@ -38,7 +38,7 @@ global:
     # host: "changeme"
   
 
-libraskeapi:
+libraskeprocessor:
   replicaCount: 6
   image:
     repository: "registry.sisp.gov.br/vlibras/vlibras-video-service/vlibras-video-core"
@@ -142,7 +142,7 @@ rabbitmqha:
 # Enable the use of an external services like PostgreSQL.
 # Note: If this is set to 'true', the internal PostgreSQL instance (above) will not be created.
 externalServices:
-  libraskeapi:
+  libraskeprocessor:
     amqp:
       enabled: true
       port: 5672
@@ -153,8 +153,8 @@ externalServices:
       #existingClaim: ""
     postgresql:
       enabled: true
-      dbName: "libraskeapi"
-      username: "libraskeapi_usr"
+      dbName: "libraskeprocessor"
+      username: "libraskeprocessor_usr"
       password: "changeme"
       host: "postgreshost.example.com"
       port: 5432

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: '{{ include "libraskeprocessor.fullname" . | lower }}-app-config'
+  labels:
+    {{ include "libraskeprocessor.labels" . | indent 4 }}
+data:
+{{ range $key, $val := .Values.libraskeprocessor.appConfig }}
+  {{ $key | quote }}:  {{ $val | quote }}
+{{- end }}
