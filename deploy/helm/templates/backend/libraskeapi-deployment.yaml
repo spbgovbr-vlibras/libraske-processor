@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libraskeapi.fullname" . | lower }}
+  labels:
+    {{ include "libraskeapi.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.libraskeapi.replicaCount }}
+  selector:
+    matchLabels:
+      {{ include "libraskeapi.labels" . | indent 8 }}
+  template:
+    metadata:
+      annotations:
+        date: {{ now | quote }}
+        {{- with .Values.libraskeapi.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{ include "libraskeapi.labels" . | indent 12 }}
+        {{- with .Values.libraskeapi.labels }}
+        {{- toYaml . | nindent 12 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.libraskeapi.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "libraskeapi.fullname" . | lower }}
+          securityContext:
+            {{- toYaml .Values.libraskeapi.securityContext | nindent 12 }}
+          image: "{{ .Values.libraskeapi.image.repository }}:{{ .Values.libraskeapi.image.tag }}"
+          imagePullPolicy: {{ .Values.libraskeapi.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "libraskeapi.fullname" . | lower }}-app-config
+            - secretRef:
+                name: {{ if .Values.libraskeapi.secrets.existingSecret }}{{ .Values.libraskeapi.secrets.existingSecret }}{{- else }}{{ include "libraskeapi.fullname" . }}-app-secret{{- end }}
+            - secretRef:
+                name: {{ if .Values.externalServices.libraskeapi.amqp.existingSecrets }}{{ .Values.externalServices.libraskeapi.amqp.existingSecrets }}{{- else }}{{ include "libraskeapi.fullname" . }}-amqp-credentials{{- end }}
+            - secretRef:
+                name: {{ if .Values.externalServices.libraskeapi.postgresql.existingSecrets }}{{ .Values.externalServices.libraskeapi.postgresql.existingSecrets }}{{- else }}{{ include "libraskeapi.fullname" . }}-db-credentials{{- end }}
+          tty: true
+          ports:
+            - name: http
+              containerPort: {{ .Values.libraskeapi.service.port }}
+              protocol: TCP
+          {{- if .Values.libraskeapi.startupProbe.enabled }}
+          startupProbe: {{- omit .Values.libraskeapi.startupProbe "enabled" | toYaml | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.libraskeapi.service.port }}
+          {{- end }}
+          {{- if .Values.libraskeapi.livenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.libraskeapi.livenessProbe "enabled" | toYaml | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.libraskeapi.service.port }}
+          {{- end }}
+          {{- if .Values.libraskeapi.readinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.libraskeapi.readinessProbe "enabled" | toYaml | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.libraskeapi.service.port }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.libraskeapi.resources | nindent 12 }}
+      {{- with .Values.libraskeapi.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.libraskeapi.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.libraskeapi.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+

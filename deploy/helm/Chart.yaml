@@ -1,0 +1,15 @@
+apiVersion: v2
+name: libraskeapi
+description: Módulo de Video do Vlibras.
+maintainers:
+  - name: Ministério da Gestão e Inovação em Serviços Públicos
+    email: sgd@gestao.gov.br
+type: application
+version: 0.1.3
+appVersion: "1.16.1"
+keywords:
+  - vlibras
+  - backend
+  - python
+  - redis
+  - rabbitmq
