@@ -41,8 +41,6 @@ spec:
                 name: {{ if .Values.libraskeprocessor.secrets.existingSecret }}{{ .Values.libraskeprocessor.secrets.existingSecret }}{{- else }}{{ include "libraskeprocessor.fullname" . }}-app-secret{{- end }}
             - secretRef:
                 name: {{ if .Values.externalServices.libraskeprocessor.amqp.existingSecrets }}{{ .Values.externalServices.libraskeprocessor.amqp.existingSecrets }}{{- else }}{{ include "libraskeprocessor.fullname" . }}-amqp-credentials{{- end }}
-            - secretRef:
-                name: {{ if .Values.externalServices.libraskeprocessor.postgresql.existingSecrets }}{{ .Values.externalServices.libraskeprocessor.postgresql.existingSecrets }}{{- else }}{{ include "libraskeprocessor.fullname" . }}-db-credentials{{- end }}
           tty: true
           ports:
             - name: http

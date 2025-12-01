@@ -39,7 +39,7 @@ global:
   
 
 libraskeprocessor:
-  replicaCount: 6
+  replicaCount: 1
   image:
     repository: "registry.sisp.gov.br/vlibras/vlibras-video-service/vlibras-video-core"
     tag: ""
@@ -47,22 +47,18 @@ libraskeprocessor:
   pullPolicy: Always
 
   appConfig:
-    AMQP_PROTOCOL: 'amqp'
-    AMQP_PREFETCH_COUNT: 1
-    CORE_QUEUE: 'core'
+    RECEIVE_QUEUE: 'frame_receiver'
+    AMQP_PREFETCH_COUNT: 10
 
 
   secrets:
     # The existingSecret field is more like a boolean. 
     # if it's empty, Video Backend creates a secret based on Enviroment Variables Values
     # if it's NOT empty, Video doesn't create a secret and try to use the existingSecret.
-    existingSecret: "vlibras-video-core-appsecret"
+    existingSecret: ""
     
     appSecret:
-      VLIBRAS_CORE_QUEUE: 'video-makere'
-      VLIBRAS_MIXER_QUEUE: 'videomixer'
-      VLIBRAS_FILES: '/video/uploads/'
-      VLIBRAS_DICTIONARY: '/video/bundles-video/'
+      chave1: 'value1'
 
 
   service:
@@ -150,12 +146,3 @@ externalServices:
       password: "changeme"
       host: "rabitmqp.example.com"
       existingSecrets: "vlibrasvideo-rabbitmq-credentials"
-      #existingClaim: ""
-    postgresql:
-      enabled: true
-      dbName: "libraskeprocessor"
-      username: "libraskeprocessor_usr"
-      password: "changeme"
-      host: "postgreshost.example.com"
-      port: 5432
-      existingSecrets: "vlibrasvideo-db-credentials"
