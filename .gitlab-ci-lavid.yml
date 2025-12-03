@@ -1,0 +1,25 @@
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "dev"'
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: never
+
+variables:
+  APP_NAME: libraskeprocessor
+  APP_URL: ""
+
+include:
+  - project: 'vlibras2019/DevOps'
+    ref: main
+    file: '/Default-App-Pipeline-VLibras.gitlab-ci.yml'
+
+# Sobrescrevendo o bloco "artifacts" do job container-build herdado
+container-build:
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_SHORT_SHA}"
+    reports:
+      dotenv: build*.env
+    paths:
+      - build*.env  # ❌ removendo oci-export*/ para teste
+    expire_in: 1 hour
