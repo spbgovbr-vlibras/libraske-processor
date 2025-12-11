@@ -1,4 +1,10 @@
 pika==1.2.0
-numpy==1.18.1
-opencv-python==4.5.4.58
-mediapipe==0.8.8
+
+# usar versão mínima suportada pelo mediapipe 0.10.x
+numpy>=1.22,<1.25
+
+# opencv moderno e compatível
+opencv-python==4.7.0.72
+
+# mediapipe atualizado
+mediapipe==0.10.5
