@@ -1,14 +1,12 @@
-#FROM python:3.6-slim-stretch
 FROM python:3
 
-RUN apt update
+RUN apt update && apt install -y build-essential python3-opencv && apt clean
 
-RUN apt-get install build-essential -y
+WORKDIR /mediapipe
 
-COPY . /mediapipe/
+COPY . .
 
-WORKDIR /mediapipe/
+RUN python -m pip install --upgrade pip
+RUN python -m pip install -r requirements.txt
 
-RUN make install
-
-CMD make start
+CMD ["make", "start"]
