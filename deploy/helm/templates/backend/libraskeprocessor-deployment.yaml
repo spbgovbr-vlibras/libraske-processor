@@ -49,17 +49,17 @@ spec:
           {{- if .Values.libraskeprocessor.startupProbe.enabled }}
           startupProbe: {{- omit .Values.libraskeprocessor.startupProbe "enabled" | toYaml | nindent 12 }}
             tcpSocket:
-              port: {{ .Values.libraskeprocessor.service.port }}
+              port: {{ .Values.libraskeprocessor.service.portProbes }}
           {{- end }}
           {{- if .Values.libraskeprocessor.livenessProbe.enabled }}
           livenessProbe: {{- omit .Values.libraskeprocessor.livenessProbe "enabled" | toYaml | nindent 12 }}
             tcpSocket:
-              port: {{ .Values.libraskeprocessor.service.port }}
+              port: {{ .Values.libraskeprocessor.service.portProbes }}
           {{- end }}
           {{- if .Values.libraskeprocessor.readinessProbe.enabled }}
           readinessProbe: {{- omit .Values.libraskeprocessor.readinessProbe "enabled" | toYaml | nindent 12 }}
             tcpSocket:
-              port: {{ .Values.libraskeprocessor.service.port }}
+              port: {{ .Values.libraskeprocessor.service.portProbes }}
           {{- end }}
           resources:
             {{- toYaml .Values.libraskeprocessor.resources | nindent 12 }}

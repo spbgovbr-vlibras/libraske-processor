@@ -64,6 +64,7 @@ libraskeprocessor:
   service:
     type: ClusterIP
     port: 80
+    portProbes: 8080
 
   #httpRelativePath: /
   ## Configure extra options for containers' liveness, readiness and startup probes
