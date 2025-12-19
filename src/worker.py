@@ -58,11 +58,11 @@ class Worker:
 
             print(f"vide-id: {video_id}")
 
-            score = self.__score_eval.get_score(
-                results, video_id, frame_id)
+            score = float(self.__score_eval.get_score(
+                results, video_id, frame_id))
             
 
-            final_score = (int(score.split(".")[1][0:2]) + 50*2)//3 if score > 0 else 0
+            final_score = (int(score * 100) + 100) // 3 if score > 0 else 0
 
             msg = {
                 "idGameSession": session_id,
