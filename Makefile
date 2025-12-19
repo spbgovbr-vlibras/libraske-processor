@@ -10,6 +10,7 @@ install:
 start:
 	@CORE_CONFIG_FILE=$(CORE_CONFIG_FILE) \
 	LOGGER_CONFIG_FILE=$(LOGGER_CONFIG_FILE) \
+	PYTHONPATH=$(CURR_DIR)/src \
 	python src/worker.py
 
 dev:
