@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: testuser
+      RABBITMQ_DEFAULT_PASS: testpass
+    ports:
+      - "127.0.0.1:5672:5672"   # expõe só no localhost
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+volumes:
+  rabbitmq_data:
