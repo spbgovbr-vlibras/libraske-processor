@@ -18,6 +18,7 @@ services:
       CORE_CONFIG_FILE: src/config/settings-dev.ini
     build: .
     container_name: processor
+    command: ["python", "src/worker.py"]
     depends_on:
       queue:
         condition: service_healthy
