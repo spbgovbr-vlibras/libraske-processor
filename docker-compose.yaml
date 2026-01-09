@@ -15,7 +15,7 @@ services:
       retries: 3
   processor:
     environment:
-      CORE_CONFIG_FILE: src/config/settings-dev.ini
+      CORE_CONFIG_FILE: src/config/settings-test-compose.ini
     build: .
     container_name: processor
     command: ["python", "src/worker.py"]
