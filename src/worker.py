@@ -22,12 +22,12 @@ class Worker:
         print ("Queue, Host, Port, User, PWD = " + queueConf + " " + hostConf+ " " + portConf+ " " + userConf+ " " + pwdConf)
 
 
-        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue=queueConf,
+        self.__publisherconfigure = queuepublisher.RabbitmqConfigure(queue="frame_receiver",
                                                                      host=hostConf,
                                                                      port=portConf,
                                                                      user=userConf,
                                                                      password=pwdConf,
-                                                                     routingKey=queueConf,
+                                                                     routingKey="frame_receiver",
                                                                      exchange='')
 
         self.__consumerconfigure = queueconsume.RabbitMqServerConfigure(queue=queueConf,
