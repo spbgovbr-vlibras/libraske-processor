@@ -33,8 +33,6 @@ class HolisticCallback():
 
         with mp_holistic.Holistic(static_image_mode=True) as holistic:
 
-            print("entreeeeei")
-
             # image = cv2.imread(image)
 
             results = holistic.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
