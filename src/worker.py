@@ -1,3 +1,5 @@
+import time
+import pika
 from queues import queueconsume
 from queues import queuepublisher
 from utils import holistic_callback
@@ -74,8 +76,13 @@ class Worker:
             self.__publisher_message(payload)
 
     def start(self, queue):
+        while True:
+            try:
+                self.__consumer.startserver(queue, self.__callback)
+            except pika.exceptions.AMQPConnectionError as e:
+                print(f"Conexão perdida com RabbitMQ: {e}. Tentando reconectar...")
+                time.sleep(5)
 
-        self.__consumer.startserver(queue, self.__callback)
 
 
 if __name__ == "__main__":
