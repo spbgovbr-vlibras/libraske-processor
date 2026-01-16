@@ -3,7 +3,7 @@ UTIL_PYCACHE	:=	"$(CURR_DIR)/src/util/__pycache__"
 
 CORE_CONFIG_FILE	:=	"$(CURR_DIR)/src/config/settings.ini"
 LOGGER_CONFIG_FILE	:=	"$(CURR_DIR)/src/config/logging.ini"
-
+SHELL := /usr/bin/env bash
 install:
 	@bash install.sh
 
@@ -11,7 +11,7 @@ start:
 	@CORE_CONFIG_FILE=$(CORE_CONFIG_FILE) \
 	LOGGER_CONFIG_FILE=$(LOGGER_CONFIG_FILE) \
 	PYTHONPATH=$(CURR_DIR)/src \
-	python src/worker.py
+	python src/worker.py 2> >(grep -v '^W0000' >&2)
 
 dev:
 	@:$(eval CORE_CONFIG_FILE := "$(CURR_DIR)/src/config/settings-dev.ini")
