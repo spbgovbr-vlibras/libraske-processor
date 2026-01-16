@@ -58,8 +58,6 @@ class Worker:
 
             results, video_id, frame_id, session_id = self.__holistic_process(body)
 
-            print(f"vide-id: {video_id}")
-
             score = float(self.__score_eval.get_score(
                 results, video_id, frame_id))
             
@@ -78,9 +76,14 @@ class Worker:
     def start(self, queue):
         while True:
             try:
+                # recria o consumidor para garantir estado limpo após falhas
+                self.__consumer = queueconsume.RabbitmqServer(self.__consumerconfigure)
                 self.__consumer.startserver(queue, self.__callback)
             except pika.exceptions.AMQPConnectionError as e:
-                print(f"Conexão perdida com RabbitMQ: {e}. Tentando reconectar...")
+                print(f"Conexão perdida com RabbitMQ: {e}. Tentando reconectar em 5s...")
+                time.sleep(5)
+            except Exception as e:
+                print(f"Erro inesperado no worker: {e}. Reiniciando em 5s...")
                 time.sleep(5)
 
 
@@ -90,4 +93,4 @@ if __name__ == "__main__":
     workercfg = configreader.load_configs("Worker")
     
     worker = Worker()
-    worker.start(workercfg.get("ReceiveQueue"))
+    worker.start(workercfg.get("ReceiveQueue", "frame_receiver"))
