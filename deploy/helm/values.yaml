@@ -41,7 +41,7 @@ global:
 libraskeprocessor:
   replicaCount: 1
   image:
-    repository: "registry.sisp.gov.br/vlibras/vlibras-video-service/vlibras-video-core"
+    repository: "registry.sisp.gov.br/vlibras/vlibras-libraskeprocessor/libraskeprocessor"
     tag: ""
   
   pullPolicy: Always
@@ -58,7 +58,7 @@ libraskeprocessor:
     existingSecret: ""
     
     appSecret:
-      chave1: 'value1'
+      PLACEHOLDER: 'PLACEHOLDER_CASO_SEJA_NECESSARIO'
 
 
   service:
@@ -133,7 +133,7 @@ rabbitmqha:
   port: 5672
   rabbitmqUsername: vlibras
   rabbitmqPassword: vlibraschangeme
-  existingSecrets: "vlibrasvideo-rabbitmq-credentials"
+  existingSecrets: "libraskeprocessor-rabbitmq-credentials"
 
 # Enable the use of an external services like PostgreSQL.
 # Note: If this is set to 'true', the internal PostgreSQL instance (above) will not be created.
@@ -145,4 +145,4 @@ externalServices:
       username: "video_usr_amqp"
       password: "changeme"
       host: "rabitmqp.example.com"
-      existingSecrets: "vlibrasvideo-rabbitmq-credentials"
+      existingSecrets: "libraskeprocessor-rabbitmq-credentials"
