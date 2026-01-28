@@ -77,7 +77,7 @@ libraskeprocessor:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 60
+    initialDelaySeconds: 180
     periodSeconds: 1
     timeoutSeconds: 5
     failureThreshold: 3
@@ -91,7 +91,7 @@ libraskeprocessor:
   ##
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 30
+    initialDelaySeconds: 180
     periodSeconds: 10
     timeoutSeconds: 1
     failureThreshold: 3
@@ -106,7 +106,7 @@ libraskeprocessor:
   ##
   startupProbe:
     enabled: false
-    initialDelaySeconds: 45
+    initialDelaySeconds: 180
     periodSeconds: 5
     timeoutSeconds: 1
     failureThreshold: 60
