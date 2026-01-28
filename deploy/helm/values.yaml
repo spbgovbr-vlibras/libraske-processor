@@ -47,7 +47,7 @@ libraskeprocessor:
   pullPolicy: Always
 
   appConfig:
-    RECEIVE_QUEUE: 'frame_receiver'
+    RECEIVE_QUEUE: 'frame_sender'
     AMQP_PREFETCH_COUNT: 10
 
 
