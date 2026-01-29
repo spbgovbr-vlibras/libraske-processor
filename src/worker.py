@@ -1,3 +1,5 @@
+import time
+import pika
 from queues import queueconsume
 from queues import queuepublisher
 from utils import holistic_callback
@@ -56,13 +58,11 @@ class Worker:
 
             results, video_id, frame_id, session_id = self.__holistic_process(body)
 
-            print(f"vide-id: {video_id}")
-
-            score = self.__score_eval.get_score(
-                results, video_id, frame_id)
+            score = float(self.__score_eval.get_score(
+                results, video_id, frame_id))
             
 
-            final_score = (int(score.split(".")[1][0:2]) + 50*2)//3 if score > 0 else 0
+            final_score = (int(score * 100) + 100) // 3 if score > 0 else 0
 
             msg = {
                 "idGameSession": session_id,
@@ -74,8 +74,18 @@ class Worker:
             self.__publisher_message(payload)
 
     def start(self, queue):
+        while True:
+            try:
+                # recria o consumidor para garantir estado limpo após falhas
+                self.__consumer = queueconsume.RabbitmqServer(self.__consumerconfigure)
+                self.__consumer.startserver(queue, self.__callback)
+            except pika.exceptions.AMQPConnectionError as e:
+                print(f"Conexão perdida com RabbitMQ: {e}. Tentando reconectar em 5s...")
+                time.sleep(5)
+            except Exception as e:
+                print(f"Erro inesperado no worker: {e}. Reiniciando em 5s...")
+                time.sleep(5)
 
-        self.__consumer.startserver(queue, self.__callback)
 
 
 if __name__ == "__main__":
@@ -83,4 +93,4 @@ if __name__ == "__main__":
     workercfg = configreader.load_configs("Worker")
     
     worker = Worker()
-    worker.start(workercfg.get("ReceiveQueue"))
+    worker.start(workercfg.get("ReceiveQueue", "frame_receiver"))

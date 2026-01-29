@@ -75,6 +75,17 @@ cd worker/
 ```sh
 make dev start
 ```
+To test the RabbitMQ connection and the worker healthcheck, start the services using Docker Compose:
+
+```sh
+docker compose up -d
+```
+
+Wait until the worker container is running, then check its health status:
+
+```sh
+docker compose ps
+```
 
 ## Contributors
 

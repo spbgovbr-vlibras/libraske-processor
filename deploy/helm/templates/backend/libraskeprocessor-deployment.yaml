@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libraskeprocessor.fullname" . | lower }}
+  labels:
+    {{ include "libraskeprocessor.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.libraskeprocessor.replicaCount }}
+  selector:
+    matchLabels:
+      {{ include "libraskeprocessor.labels" . | indent 8 }}
+  template:
+    metadata:
+      annotations:
+        date: {{ now | quote }}
+        {{- with .Values.libraskeprocessor.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{ include "libraskeprocessor.labels" . | indent 12 }}
+        {{- with .Values.libraskeprocessor.labels }}
+        {{- toYaml . | nindent 12 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.libraskeprocessor.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "libraskeprocessor.fullname" . | lower }}
+          securityContext:
+            {{- toYaml .Values.libraskeprocessor.securityContext | nindent 12 }}
+          image: "{{ .Values.libraskeprocessor.image.repository }}:{{ .Values.libraskeprocessor.image.tag }}"
+          imagePullPolicy: {{ .Values.libraskeprocessor.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "libraskeprocessor.fullname" . | lower }}-app-config
+            - secretRef:
+                name: {{ if .Values.libraskeprocessor.secrets.existingSecret }}{{ .Values.libraskeprocessor.secrets.existingSecret }}{{- else }}{{ include "libraskeprocessor.fullname" . }}-app-secret{{- end }}
+            - secretRef:
+                name: {{ if .Values.externalServices.libraskeprocessor.amqp.existingSecrets }}{{ .Values.externalServices.libraskeprocessor.amqp.existingSecrets }}{{- else }}{{ include "libraskeprocessor.fullname" . }}-amqp-credentials{{- end }}
+          tty: true
+          ports:
+            - name: http
+              containerPort: {{ .Values.libraskeprocessor.service.port }}
+              protocol: TCP
+          {{- if .Values.libraskeprocessor.startupProbe.enabled }}
+          startupProbe: {{- omit .Values.libraskeprocessor.startupProbe "enabled" | toYaml | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.libraskeprocessor.service.port }}
+          {{- end }}
+          {{- if .Values.libraskeprocessor.livenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.libraskeprocessor.livenessProbe "enabled" | toYaml | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.libraskeprocessor.service.port }}
+          {{- end }}
+          {{- if .Values.libraskeprocessor.readinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.libraskeprocessor.readinessProbe "enabled" | toYaml | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.libraskeprocessor.service.port }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.libraskeprocessor.resources | nindent 12 }}
+      {{- with .Values.libraskeprocessor.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.libraskeprocessor.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.libraskeprocessor.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+
