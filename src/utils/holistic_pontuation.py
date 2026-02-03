@@ -2,7 +2,7 @@ import cv2
 import json
 import math
 import mediapipe as mp
-from utils.scheme.SchemeEvaluation import SchemeEvaluation
+from src.utils.scheme.SchemeEvaluation import SchemeEvaluation
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
 
