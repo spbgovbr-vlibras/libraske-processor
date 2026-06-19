@@ -2,16 +2,17 @@
 workflow:
   rules:
     - if: '$CI_COMMIT_REF_NAME == "dev"'
-    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - when: never
 
 variables:
   APP_NAME: libraskeprocessor
   APP_URL: ""
+  UPDATE_DEPS: true
 
 include:
   - project: 'vlibras2019/DevOps'
-    ref: main
+    ref: update_automatico
     file: '/Default-App-Pipeline-VLibras.gitlab-ci.yml'
 
 # Sobrescrevendo o bloco "artifacts" do job container-build herdado
